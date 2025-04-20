@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>no.ntnu.idata2502.project</groupId>
 	<artifactId>todoapp</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.1.0-SNAPSHOT</version>
 	<name>todoapp</name>
 	<description>IDATA2502 exam portfolio backend project</description>
 	<url/>
