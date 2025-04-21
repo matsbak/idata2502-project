@@ -4,7 +4,7 @@ import Sidebar from './components/Sidebar.vue'
 import MainSection from './components/MainSection.vue'
 import { ref } from 'vue'
 
-const lists = ref<Array<List>>([
+const lists = ref<List[]>([
   {
     "id": 1,
     "title": "My first list",
@@ -33,9 +33,14 @@ const lists = ref<Array<List>>([
     ]
   }
 ])
+
+const selected = ref<number>(lists.value[0].id)
 </script>
 
 <template>
-  <Sidebar />
-  <MainSection />
+  <Sidebar @select="(id) => selected = id" />
+  <MainSection
+    :title="lists.find(list => list.id === selected).title"
+    :todos="lists.find(list => list.id === selected).todos"
+  />
 </template>

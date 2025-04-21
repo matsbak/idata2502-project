@@ -6,11 +6,15 @@ import InfoDisplay from './InfoDisplay.vue'
 import { onUpdated, ref, useTemplateRef } from 'vue'
 import { CornerDownLeft, Plus } from 'lucide-vue-next'
 
-const lists = ref<Array<List>>([
+const lists = ref<List[]>([
   { "id": 1, "title": "My first list" },
   { "id": 2, "title": "My second list" },
   { "id": 3, "title": "My third list" },
 ])
+
+const emit = defineEmits<{
+  select: [id: number]
+}>()
 
 const selected = ref<number>(lists.value[0].id)
 
@@ -35,6 +39,7 @@ onUpdated(() => {
 const select = (id: number) => {
   selected.value = id
   inputMode.value = false
+  emit('select', id)
 }
 
 const enableInputMode = () => {
@@ -88,6 +93,7 @@ const addList = () => {
               class="mr-2 w-full focus:outline-none"
             />
             <CornerDownLeft
+              :size="18"
               @click="addList()"
             />
           </li>
