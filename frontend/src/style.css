@@ -2,6 +2,9 @@
 
 body {
   height: 100vh;
+  font-family: "Fira Code", monospace;
+  font-optical-sizing: auto;
   font-weight: 600;
+  font-style: normal;
   background-color: #eee;
 }
