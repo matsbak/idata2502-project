@@ -98,7 +98,7 @@ const addList = () => {
           >
             <Plus
               :size="18"
-              class="mr-1"
+              class="mr-2"
             />
             Add list
           </li>
@@ -106,6 +106,9 @@ const addList = () => {
       </div>
       <FooterSection @info="displayInfo = true" />
     </div>
-    <InfoDisplay v-else @sidebar="displayInfo = false" />
+    <div v-else class="h-full">
+      <InfoDisplay @sidebar="displayInfo = false" />
+      <FooterSection @info="displayInfo = false" />
+    </div>
   </aside>
 </template>

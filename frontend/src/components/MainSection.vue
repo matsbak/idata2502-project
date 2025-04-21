@@ -3,7 +3,7 @@
 
 <template>
   <main class="flex flex-col grow">
-    <h2 class="flex justify-center items-center p-8 text-4xl">My first list</h2>
+    <h2 class="flex justify-center items-center p-8 text-3xl">My first list</h2>
     <ul class="flex flex-col grow items-center overflow-y-auto">
       <li class="flex mb-2 p-2 w-2xl rounded-md bg-white">
         <input

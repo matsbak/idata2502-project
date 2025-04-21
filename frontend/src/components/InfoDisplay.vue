@@ -3,7 +3,7 @@ import { ArrowLeft } from 'lucide-vue-next'
 </script>
 
 <template>
-  <article class="p-2">
+  <article class="p-2 h-39/40">
     <ArrowLeft
       @click="$emit('sidebar')"
       :size="32"
