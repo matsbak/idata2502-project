@@ -3,7 +3,7 @@ import type { List } from '../types/List'
 import HeaderSection from './HeaderSection.vue'
 import FooterSection from './FooterSection.vue'
 import { onUpdated, ref, useTemplateRef } from 'vue'
-import { Plus } from 'lucide-vue-next'
+import { CornerDownLeft, Plus } from 'lucide-vue-next'
 
 const lists = ref<Array<List>>([
   { "id": 1, "title": "My first list" },
@@ -36,7 +36,6 @@ const select = (id: number) => {
 
 const enableInputMode = () => {
   tmpSelected = selected.value
-  selected.value = -1
   inputMode.value = true
 }
 
@@ -59,14 +58,14 @@ const addList = () => {
   <aside class="flex flex-col justify-between h-full w-sm bg-white">
     <div class="h-39/40 w-full">
       <HeaderSection />
-      <ul class="px-1 h-7/8 w-full overflow-y-auto">
+      <ul class="px-1 h-9/10 w-full overflow-y-auto">
         <li
           v-for="list in lists"
           :key="list.id"
           @click="select(list.id)"
           :class="[
-            'p-4 border-l-3 text-lg cursor-pointer',
-            selected === list.id ? 'border-black' : 'border-stone-300 hover:border-black'
+            'p-2 text-lg cursor-pointer',
+            selected === list.id ? 'font-semibold' : 'hover:font-semibold'
           ]"
         >
           {{ list.title }}
@@ -75,18 +74,19 @@ const addList = () => {
           v-if="inputMode"
           @keyup.escape="disableInputMode()"
           @keyup.enter="addList()"
-          class="flex items-center justify-between p-4 w-full border-l-3 text-lg"
+          class="flex items-center justify-between p-2 w-full text-lg"
         >
           <input
             ref="input"
             placeholder="List title"
-            class="w-full placeholder:text-stone-300 focus:outline-none"
+            class="mr-2 w-full placeholder:text-stone-300 focus:outline-none"
           />
+          <CornerDownLeft />
         </li>
         <li
           v-else
           @click="enableInputMode()"
-          class="p-4 w-min cursor-pointer"
+          class="p-2 w-min cursor-pointer"
         >
           <Plus />
         </li>
