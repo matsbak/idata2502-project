@@ -64,13 +64,13 @@ const addList = () => {
     <div v-if="!displayInfo" class="h-full">
       <div class="h-39/40 w-full">
         <HeaderSection />
-        <ul class="px-1 h-9/10 w-full overflow-y-auto">
+        <ul class="px-1 h-7/8 w-full overflow-y-auto">
           <li
             v-for="list in lists"
             :key="list.id"
             @click="select(list.id)"
             :class="[
-              'p-2 text-lg cursor-pointer',
+              'pb-4 px-2 w-fit text-lg cursor-pointer',
               selected === list.id ? 'font-semibold' : 'hover:font-semibold'
             ]"
           >
@@ -80,7 +80,7 @@ const addList = () => {
             v-if="inputMode"
             @keyup.escape="disableInputMode()"
             @keyup.enter="addList()"
-            class="flex items-center justify-between p-2 w-full text-lg"
+            class="flex items-center justify-between px-2 w-full text-lg"
           >
             <input
               ref="input"
@@ -94,9 +94,13 @@ const addList = () => {
           <li
             v-else
             @click="enableInputMode()"
-            class="p-2 w-min cursor-pointer"
+            class="flex items-center px-2 w-fit text-lg italic hover:font-semibold cursor-pointer"
           >
-            <Plus />
+            <Plus
+              :size="18"
+              class="mr-1"
+            />
+            Add list
           </li>
         </ul>
       </div>
