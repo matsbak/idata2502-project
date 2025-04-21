@@ -2,6 +2,7 @@
 import type { List } from '../types/List'
 import HeaderSection from './HeaderSection.vue'
 import FooterSection from './FooterSection.vue'
+import InfoDisplay from './InfoDisplay.vue'
 import { onUpdated, ref, useTemplateRef } from 'vue'
 import { CornerDownLeft, Plus } from 'lucide-vue-next'
 
@@ -15,6 +16,8 @@ const selected = ref<number>(lists.value[0].id)
 
 const inputMode = ref<boolean>(false)
 const input = useTemplateRef('input')
+
+const displayInfo = ref<boolean>(false)
 
 let tmpSelected: number = 0
 let tmpId: number = -1
@@ -47,51 +50,58 @@ const disableInputMode = () => {
 
 const addList = () => {
   const list: List = { "id": lists.value[lists.value.length - 1].id + 1, "title": input.value!.value }
-  lists.value.push(list)
-  tmpId = list.id
-  input.value!.value = ""
-  inputMode.value = false
+  if (list.title) {
+    lists.value.push(list)
+    tmpId = list.id
+    input.value!.value = ""
+    inputMode.value = false
+  }
 }
 </script>
 
 <template>
   <aside class="flex flex-col justify-between h-full w-sm bg-white">
-    <div class="h-39/40 w-full">
-      <HeaderSection />
-      <ul class="px-1 h-9/10 w-full overflow-y-auto">
-        <li
-          v-for="list in lists"
-          :key="list.id"
-          @click="select(list.id)"
-          :class="[
-            'p-2 text-lg cursor-pointer',
-            selected === list.id ? 'font-semibold' : 'hover:font-semibold'
-          ]"
-        >
-          {{ list.title }}
-        </li>
-        <li
-          v-if="inputMode"
-          @keyup.escape="disableInputMode()"
-          @keyup.enter="addList()"
-          class="flex items-center justify-between p-2 w-full text-lg"
-        >
-          <input
-            ref="input"
-            placeholder="List title"
-            class="mr-2 w-full placeholder:text-stone-300 focus:outline-none"
-          />
-          <CornerDownLeft />
-        </li>
-        <li
-          v-else
-          @click="enableInputMode()"
-          class="p-2 w-min cursor-pointer"
-        >
-          <Plus />
-        </li>
-      </ul>
+    <div v-if="!displayInfo" class="h-full">
+      <div class="h-39/40 w-full">
+        <HeaderSection />
+        <ul class="px-1 h-9/10 w-full overflow-y-auto">
+          <li
+            v-for="list in lists"
+            :key="list.id"
+            @click="select(list.id)"
+            :class="[
+              'p-2 text-lg cursor-pointer',
+              selected === list.id ? 'font-semibold' : 'hover:font-semibold'
+            ]"
+          >
+            {{ list.title }}
+          </li>
+          <li
+            v-if="inputMode"
+            @keyup.escape="disableInputMode()"
+            @keyup.enter="addList()"
+            class="flex items-center justify-between p-2 w-full text-lg"
+          >
+            <input
+              ref="input"
+              placeholder="List title"
+              class="mr-2 w-full focus:outline-none"
+            />
+            <CornerDownLeft
+              @click="addList()"
+            />
+          </li>
+          <li
+            v-else
+            @click="enableInputMode()"
+            class="p-2 w-min cursor-pointer"
+          >
+            <Plus />
+          </li>
+        </ul>
+      </div>
+      <FooterSection @info="displayInfo = true" />
     </div>
-    <FooterSection />
+    <InfoDisplay v-else @sidebar="displayInfo = false" />
   </aside>
 </template>

@@ -7,6 +7,8 @@ import { Info } from 'lucide-vue-next'
     <p class="text-sm italic">Version 0.1.0-SNAPSHOT</p>
     <Info
       :size="18"
+      @click="$emit('info')"
+      class="cursor-pointer"
     />
   </footer>
 </template>
