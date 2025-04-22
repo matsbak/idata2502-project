@@ -1,7 +1,7 @@
 import type { Todo } from './Todo.ts'
 
 export interface List {
-  id: number,
+  id: number
   title: string
-  todos?: Todo[]
+  todos: Todo[]
 }

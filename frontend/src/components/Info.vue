@@ -6,7 +6,7 @@ import { ArrowLeft } from 'lucide-vue-next'
   <article class="p-2 h-39/40">
     <ArrowLeft
       @click="$emit('sidebar')"
-      :size="32"
+      :size="18"
       class="cursor-pointer"
     />
     <img

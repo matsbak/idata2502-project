@@ -2,7 +2,7 @@
 import type { Todo } from '../types/Todo.ts'
 
 const props = defineProps<{
-  title: string,
+  title: string
   todos: Todo[]
 }>()
 </script>

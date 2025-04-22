@@ -38,7 +38,12 @@ const selected = ref<number>(lists.value[0].id)
 </script>
 
 <template>
-  <Sidebar @select="(id) => selected = id" />
+  <Sidebar
+    :lists="lists"
+    :selected="selected"
+    @select="(id) => selected = id"
+    @add-list="(list) => lists.push(list)"
+  />
   <MainSection
     :title="lists.find(list => list.id === selected).title"
     :todos="lists.find(list => list.id === selected).todos"
