@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { List } from '../types/List'
-import Sidebar from './components/Sidebar.vue'
-import MainSection from './components/MainSection.vue'
+import SidebarSection from './sections/SidebarSection.vue'
+import MainSection from './sections/MainSection.vue'
 import { ref } from 'vue'
 
 const lists = ref<List[]>([
@@ -35,17 +35,26 @@ const lists = ref<List[]>([
 ])
 
 const selected = ref<number>(lists.value[0].id)
+
+const toggle = (ids: number[]) => {
+  const completed: boolean = lists.value
+    .find(list => list.id === ids[0]).todos
+    .find(todo => todo.id === ids[1]).completed
+  lists.value
+    .find(list => list.id === ids[0]).todos
+    .find(todo => todo.id === ids[1]).completed = !completed
+}
 </script>
 
 <template>
-  <Sidebar
+  <SidebarSection
     :lists="lists"
     :selected="selected"
     @select="(id) => selected = id"
     @add-list="(list) => lists.push(list)"
   />
   <MainSection
-    :title="lists.find(list => list.id === selected).title"
-    :todos="lists.find(list => list.id === selected).todos"
+    @toggle="(ids) => toggle(ids)"
+    :list="lists.find(list => list.id === selected)"
   />
 </template>

@@ -2,7 +2,7 @@
 import type { List } from '../types/List'
 import HeaderSection from './HeaderSection.vue'
 import FooterSection from './FooterSection.vue'
-import Info from './Info.vue'
+import InfoDisplay from '../components/InfoDisplay.vue'
 import { onUpdated, ref, useTemplateRef } from 'vue'
 import { CornerDownLeft, Plus } from 'lucide-vue-next'
 
@@ -70,13 +70,11 @@ onUpdated(() => {
             <input
               @focusout="inputMode = false"
               ref="input"
+              name="list"
               placeholder="List title"
               class="mr-2 w-full focus:outline-none"
             />
-            <CornerDownLeft
-              :size="18"
-              @click="addList()"
-            />
+            <CornerDownLeft :size="18" />
           </li>
           <li
             v-else
@@ -97,7 +95,7 @@ onUpdated(() => {
       v-else
       class="h-full"
     >
-      <Info @sidebar="displayInfo = false" />
+      <InfoDisplay @sidebar="displayInfo = false" />
       <FooterSection @info="displayInfo = false" />
     </div>
   </aside>
