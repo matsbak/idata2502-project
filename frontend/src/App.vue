@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { List } from '../types/List'
+import type { Todo } from '../types/Todo'
 import SidebarSection from './sections/SidebarSection.vue'
 import MainSection from './sections/MainSection.vue'
 import { ref } from 'vue'
@@ -44,6 +45,13 @@ const toggle = (ids: number[]) => {
     .find(list => list.id === ids[0]).todos
     .find(todo => todo.id === ids[1]).completed = !completed
 }
+
+const remove = (ids: number[]) => {
+  const todos: Todo[] = lists.value.find(list => list.id === ids[0]).todos
+  const index: number = todos.indexOf(todos.find(todo => todo.id === ids[1]))
+  // Remove todo at defined index
+  lists.value.find(list => list.id === ids[0]).todos.splice(index, 1)
+}
 </script>
 
 <template>
@@ -56,6 +64,7 @@ const toggle = (ids: number[]) => {
   />
   <MainSection
     @toggle="(ids) => toggle(ids)"
+    @remove="(ids) => remove(ids)"
     :list="lists.find(list => list.id === selected)"
   />
 </template>

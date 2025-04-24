@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Todo } from '../types/Todo.ts'
+import { Trash2 } from 'lucide-vue-next'
 
 const props = defineProps<{
   list: List
@@ -22,30 +23,37 @@ const props = defineProps<{
       <li
         v-for="todo in list.todos"
         :key="todo.id"
-        class="flex mb-2 p-2 w-3xl rounded-md bg-white"
+        class="group flex justify-between items-center mb-2 p-2 w-3xl rounded-md bg-white"
       >
-        <input
-          v-if="todo.completed"
-          @click="$emit('toggle', [list.id, todo.id])"
-          type="checkbox"
-          name="todo"
-          class="mr-2"
-          checked
+        <div class="flex">
+          <input
+            v-if="todo.completed"
+            @click="$emit('toggle', [list.id, todo.id])"
+            type="checkbox"
+            name="todo"
+            class="mr-2"
+            checked
+          />
+          <input
+            v-else
+            @click="$emit('toggle', [list.id, todo.id])"
+            type="checkbox"
+            name="todo"
+            class="mr-2"
+          />
+          <p
+            @click="$emit('toggle', [list.id, todo.id])"
+            :class="[
+              'overflow-x-hidden text-nowrap cursor-default',
+              todo.completed ? 'line-through' : 'hover:line-through'
+            ]"
+          >{{ todo.description }}</p>
+        </div>
+        <Trash2
+          @click="$emit('remove', [list.id, todo.id])"
+          :size="18"
+          class="cursor-pointer hidden group-hover:block"
         />
-        <input
-          v-else
-          @click="$emit('toggle', [list.id, todo.id])"
-          type="checkbox"
-          name="todo"
-          class="mr-2"
-        />
-        <p
-          @click="$emit('toggle', [list.id, todo.id])"
-          :class="[
-            'overflow-x-hidden text-nowrap cursor-default',
-            todo.completed ? 'line-through' : 'hover:line-through'
-          ]"
-        >{{ todo.description }}</p>
       </li>
     </ul>
   </main>
