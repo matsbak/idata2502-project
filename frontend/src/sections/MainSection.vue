@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Todo } from '../types/Todo.ts'
-import { Trash2 } from 'lucide-vue-next'
+import { Plus, Trash2 } from 'lucide-vue-next'
 
 const props = defineProps<{
   list: List
@@ -30,7 +30,7 @@ const props = defineProps<{
             v-if="todo.completed"
             @click="$emit('toggle', [list.id, todo.id])"
             type="checkbox"
-            name="todo"
+            name="check"
             class="mr-2"
             checked
           />
@@ -38,7 +38,7 @@ const props = defineProps<{
             v-else
             @click="$emit('toggle', [list.id, todo.id])"
             type="checkbox"
-            name="todo"
+            name="check"
             class="mr-2"
           />
           <p
@@ -54,6 +54,15 @@ const props = defineProps<{
           :size="18"
           class="cursor-pointer hidden group-hover:block"
         />
+      </li>
+      <li class="p-1 w-3xl">
+        <div class="flex items-center w-fit hover:font-semibold cursor-pointer">
+          <Plus
+            :size="18"
+            class="mr-1"
+          />
+          <p class="italic relative top-0.25">Add todo</p>
+        </div>
       </li>
     </ul>
   </main>
