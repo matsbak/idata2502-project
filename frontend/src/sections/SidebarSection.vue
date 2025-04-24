@@ -4,7 +4,7 @@ import HeaderSection from './HeaderSection.vue'
 import FooterSection from './FooterSection.vue'
 import InfoDisplay from '../components/InfoDisplay.vue'
 import { onUpdated, ref, useTemplateRef } from 'vue'
-import { CornerDownLeft, Plus } from 'lucide-vue-next'
+import { CornerDownLeft, Plus, Trash2 } from 'lucide-vue-next'
 
 const props = defineProps<{
   lists: List[]
@@ -12,9 +12,10 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  // Define `select` as `defineEmits` is defined in the component
+  // Define `select` and `removeList` as `defineEmits` is defined in the component
   select: [id: number]
   addList: [list: List]
+  removeList: [id: number]
 }>()
 
 const input = useTemplateRef('input')
@@ -23,7 +24,7 @@ const displayInfo = ref<boolean>(false)
 
 const addList = () => {
   const list: List = {
-    "id": props.lists[props.lists.length - 1].id + 1,
+    "id": props.lists.length > 0 ? props.lists[props.lists.length - 1].id + 1 : 1,
     "title": input.value.value,
     "todos": []
   }
@@ -53,13 +54,20 @@ onUpdated(() => {
           <li
             v-for="list in lists"
             :key="list.id"
-            @click="$emit('select', list.id)"
-            :class="[
-              'pb-4 px-2 w-fit text-lg cursor-pointer',
-              selected === list.id ? 'font-semibold' : 'hover:font-semibold'
-            ]"
+            class="group flex justify-between items-center pb-4 px-2 text-lg"
           >
-            {{ list.title }}
+            <p
+              @click="$emit('select', list.id)"
+              :class="[
+                'cursor-pointer',
+                selected === list.id ? 'font-semibold' : 'hover:font-semibold'
+              ]"
+            >{{ list.title }}</p>
+            <Trash2
+              @click="$emit('removeList', list.id)"
+              :size="18"
+              class="cursor-pointer hidden group-hover:block"
+            />
           </li>
           <li
             v-if="inputMode"

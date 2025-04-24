@@ -7,7 +7,16 @@ const props = defineProps<{
 </script>
 
 <template>
-  <main class="flex flex-col grow">
+  <main
+    v-if="list === undefined"
+    class="flex flex-col grow"
+  >
+    <h2 class="flex justify-center items-center p-8 text-3xl italic">Please select a list</h2>
+  </main>
+  <main
+    v-else
+    class="flex flex-col grow"
+  >
     <h2 class="flex justify-center items-center p-8 text-3xl">{{ list.title }}</h2>
     <ul class="flex flex-col grow items-center overflow-y-auto">
       <li

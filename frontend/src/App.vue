@@ -34,7 +34,7 @@ const lists = ref<List[]>([
   }
 ])
 
-const selected = ref<number>(lists.value[0].id)
+const selected = ref<number>(-1)
 
 const toggle = (ids: number[]) => {
   const completed: boolean = lists.value
@@ -50,8 +50,9 @@ const toggle = (ids: number[]) => {
   <SidebarSection
     :lists="lists"
     :selected="selected"
-    @select="(id) => selected = id"
+    @select="(id) => selected === id ? selected = -1 : selected = id"
     @add-list="(list) => lists.push(list)"
+    @remove-list="(id) => lists.splice(lists.indexOf(lists.find(list => list.id === id)), 1)"
   />
   <MainSection
     @toggle="(ids) => toggle(ids)"
