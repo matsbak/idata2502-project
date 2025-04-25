@@ -10,27 +10,27 @@ const lists = ref<List[]>([
     "id": 1,
     "title": "My first list",
     "todos": [
-      { "id": 1, "description": "My first todo", "completed": false },
-      { "id": 2, "description": "My second todo", "completed": false },
-      { "id": 3, "description": "My third todo", "completed": false }
+      { "id": 101, "description": "My first todo", "completed": false },
+      { "id": 102, "description": "My second todo", "completed": false },
+      { "id": 103, "description": "My third todo", "completed": false }
     ]
   },
   {
     "id": 2,
     "title": "My second list",
     "todos": [
-      { "id": 4, "description": "My fourth todo", "completed": false },
-      { "id": 5, "description": "My fifth todo", "completed": false },
-      { "id": 6, "description": "My sixth todo", "completed": false }
+      { "id": 201, "description": "My fourth todo", "completed": false },
+      { "id": 202, "description": "My fifth todo", "completed": false },
+      { "id": 203, "description": "My sixth todo", "completed": false }
     ]
   },
   {
     "id": 3,
     "title": "My third list",
     "todos": [
-      { "id": 7, "description": "My seventh todo", "completed": false },
-      { "id": 8, "description": "My eighth todo", "completed": false },
-      { "id": 9, "description": "My ninth todo", "completed": false }
+      { "id": 301, "description": "My seventh todo", "completed": false },
+      { "id": 302, "description": "My eighth todo", "completed": false },
+      { "id": 303, "description": "My ninth todo", "completed": false }
     ]
   }
 ])
@@ -64,6 +64,7 @@ const remove = (ids: number[]) => {
   />
   <MainSection
     @toggle="(ids) => toggle(ids)"
+    @add="(todo) => lists.find(list => list.id === todo[0]).todos.push(todo[1])"
     @remove="(ids) => remove(ids)"
     :list="lists.find(list => list.id === selected)"
   />

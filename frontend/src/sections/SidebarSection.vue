@@ -12,7 +12,7 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  // Define `select` and `removeList` as `defineEmits` is defined in the component
+  // Emits `select` and `removeList` are only used in template
   select: [id: number]
   addList: [list: List]
   removeList: [id: number]

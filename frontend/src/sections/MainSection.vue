@@ -1,10 +1,36 @@
 <script setup lang="ts">
+import type { List } from '../types/List.ts'
 import type { Todo } from '../types/Todo.ts'
-import { Plus, Trash2 } from 'lucide-vue-next'
+import { onUpdated, ref, useTemplateRef } from 'vue'
+import { CornerDownLeft, Plus, Trash2 } from 'lucide-vue-next'
 
 const props = defineProps<{
-  list: List
+  list: List | undefined
 }>()
+
+const emit = defineEmits<{
+  // Emits `select` and `remove` are only used in template
+  select: [ids: number[]]
+  add: [todo: (number | Todo)[]]
+  remove: [ids: number[]]
+}>()
+
+const input = useTemplateRef('input')
+const inputMode = ref<boolean>(false)
+
+const add = () => {
+  const todo: Todo = {
+    "id": props.list.todos[props.list.todos.length - 1].id + 1,
+    "description": input.value.value,
+    "completed": false
+  }
+  if (todo.description) {
+    emit('add', [props.list.id, todo])
+    inputMode.value = false
+  }
+}
+
+onUpdated(() => inputMode.value ? input.value.focus() : null)
 </script>
 
 <template>
@@ -55,13 +81,33 @@ const props = defineProps<{
           class="cursor-pointer hidden group-hover:block"
         />
       </li>
-      <li class="p-1 w-3xl">
-        <div class="flex items-center w-fit hover:font-semibold cursor-pointer">
+      <li
+        v-if="inputMode"
+        @keyup.escape="inputMode = false"
+        @keyup.enter="add()"
+        class="flex justify-between items-center p-2 w-3xl rounded-md bg-white"
+      >
+        <input
+          @focusout="inputMode = false"
+          ref="input"
+          name="todo"
+          class="mr-1 w-full focus:outline-none"
+        />
+        <CornerDownLeft :size="18" />
+      </li>
+      <li
+        v-else
+        class="p-2 w-3xl"
+      >
+        <div
+          @click="inputMode = true"
+          class="flex items-center w-fit hover:font-semibold cursor-pointer"
+        >
           <Plus
             :size="18"
-            class="mr-1"
+            class="mr-1 relative right-0.5 bottom-0.25"
           />
-          <p class="italic relative top-0.25">Add todo</p>
+          <p class="italic">Add todo</p>
         </div>
       </li>
     </ul>
