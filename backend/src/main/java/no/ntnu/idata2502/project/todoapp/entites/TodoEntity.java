@@ -10,15 +10,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 
 /**
- * The TodoEntity class represents the entity class for the todo entity.
- * 
- * <p>The class uses JPA with annotations for ORM operations.</p>
+ * The TodoEntity class represents a specific todo. The class contains JPA annotations for ORM
+ * operations.
  * 
  * @author Candidate 10006
- * @version v1.1.0 (2024.11.27)
+ * @version v1.1.1 (2025.04.27)
  */
 @Entity(name = "todo")
-@Schema(description = "Todo entity, representing a specific todo")
+@Schema(description = "Todo entity representing a specific todo")
 public class TodoEntity {
 
   @Id
@@ -29,7 +28,7 @@ public class TodoEntity {
   @Schema(description = "Todo description")
   private String description;
 
-  @Schema(description = "Is todo completed or not")
+  @Schema(description = "Completion status of todo")
   private boolean completed;
 
   @ManyToOne
@@ -37,16 +36,14 @@ public class TodoEntity {
   private ListEntity list;
 
   /**
-   * Constructs an instance of the TodoEntity class.
-   * 
-   * <p>Empty constructor required by JPA.</p>
+   * Empty constructor required by JPA.
    */
   public TodoEntity() {
     // Intentionally left blank
   }
 
   /**
-   * Constructs an instance of the TodoEntity class.
+   * Constructor for the TodoEntity class.
    * 
    * @param description The specified description
    */
@@ -55,22 +52,47 @@ public class TodoEntity {
     this.completed = false;
   }
 
+  /**
+   * Getter for ID.
+   * 
+   * @return ID
+   */
   public Long getId() {
     return this.id;
   }
 
+  /**
+   * Getter for description.
+   * 
+   * @return Description
+   */
   public String getDescription() {
     return this.description;
   }
 
+  /**
+   * Getter for completion status.
+   * 
+   * @return Completion status
+   */
   public boolean isCompleted() {
     return this.completed;
   }
 
+  /**
+   * Setter for completion status.
+   * 
+   * @param completed The specified completion status
+   */
   public void setCompleted(boolean completed) {
     this.completed = completed;
   }
 
+  /**
+   * Getter for list.
+   * 
+   * @return List
+   */
   public ListEntity getList() {
     return this.list;
   }

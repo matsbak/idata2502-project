@@ -10,11 +10,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 
 /**
- * The ListEntity class represents a list of {@link TodoEntity todos}. The class contains JPA
- * annotations for ORM operations.
+ * The ListEntity class represents a specific list of {@link TodoEntity todos}. The class contains
+ * JPA annotations for ORM operations.
  * 
  * @author Candidate 10006
- * @version v1.1.0 (2025.04.27)
+ * @version v1.1.1 (2025.04.27)
  */
 @Entity(name = "list")
 @Schema(description = "List entity representing a specific list of todos")
