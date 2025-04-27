@@ -1,10 +1,13 @@
 package no.ntnu.idata2502.project.todoapp.entites;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 
 /**
  * The TodoEntity class represents the entity class for the todo entity.
@@ -28,6 +31,10 @@ public class TodoEntity {
 
   @Schema(description = "Is todo completed or not")
   private boolean completed;
+
+  @ManyToOne
+  @JsonIgnore
+  private ListEntity list;
 
   /**
    * Constructs an instance of the TodoEntity class.
@@ -62,6 +69,10 @@ public class TodoEntity {
 
   public void setCompleted(boolean completed) {
     this.completed = completed;
+  }
+
+  public ListEntity getList() {
+    return this.list;
   }
 
   /**
