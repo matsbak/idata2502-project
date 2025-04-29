@@ -58,7 +58,7 @@ public class TodoController {
   })
   @GetMapping
   public Iterable<TodoEntity> getAll() {
-    logger.info("Sending all todos...");
+    this.logger.info("Sending all todos...");
     Iterable<TodoEntity> todos = this.todoService.getAll();
     return todos;
   }
@@ -93,11 +93,11 @@ public class TodoController {
     try {
       TodoEntity todo = new TodoEntity(description);
       Long id = this.todoService.add(todo);
-      logger.info("Valid todo, sending generated ID of created todo...");
+      this.logger.info("Valid todo, sending generated ID of created todo...");
       // TODO No URI specified
       response = ResponseEntity.created(null).body(id);
     } catch (IllegalArgumentException e) {
-      logger.error("Invalid todo, sending error message...");
+      this.logger.error("Invalid todo, sending error message...");
       response = ResponseEntity.badRequest().body(e.getMessage());
     }
     return response;
@@ -134,10 +134,10 @@ public class TodoController {
   ) {
     ResponseEntity<String> response;
     if (this.todoService.update(id, complete)) {
-      logger.info("Todo exists, sending success response...");
+      this.logger.info("Todo exists, sending success response...");
       response = ResponseEntity.ok().build();
     } else {
-      logger.error("Todo does not exist, sending error response...");
+      this.logger.error("Todo does not exist, sending error response...");
       response = ResponseEntity.notFound().build();
     }
     return response;
@@ -171,10 +171,10 @@ public class TodoController {
   ) {
     ResponseEntity<String> response;
     if (this.todoService.delete(id)) {
-      logger.info("Todo exists, sending success response");
+      this.logger.info("Todo exists, sending success response");
       response = ResponseEntity.ok().build();
     } else {
-      logger.error("Todo does not exist, sending error response...");
+      this.logger.error("Todo does not exist, sending error response...");
       response = ResponseEntity.notFound().build();
     }
     return response;
@@ -189,7 +189,7 @@ public class TodoController {
    */
   @ExceptionHandler(MethodArgumentTypeMismatchException.class)
   public ResponseEntity<String> handlePathVarException(MethodArgumentTypeMismatchException e) {
-    logger.error("Received request contains invalid formatting, sending error message...");
+    this.logger.error("Received request contains invalid formatting, sending error message...");
     return ResponseEntity.badRequest().body(e.getMessage());
   }
 
@@ -202,7 +202,7 @@ public class TodoController {
    */
   @ExceptionHandler(HttpMessageNotReadableException.class)
   public ResponseEntity<String> handleRequestBodyException(HttpMessageNotReadableException e) {
-    logger.error("Received request body contains invalid formatting, sending error message...");
+    this.logger.error("Received request body contains invalid formatting, sending error message...");
     return ResponseEntity.badRequest().body(e.getMessage());
   }
 }

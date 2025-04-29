@@ -27,7 +27,7 @@ import no.ntnu.idata2502.project.todoapp.services.ListService;
  * handles all HTTP traffic reaching its endpoints.
  * 
  * @author Candidate 10006
- * @version v1.1.1 (2025.04.29)
+ * @version v1.1.2 (2025.04.29)
  */
 @RestController
 @RequestMapping("/api/lists")
@@ -55,7 +55,7 @@ public class ListController {
   })
   @GetMapping
   public Iterable<ListEntity> getAll() {
-    logger.info("Sending all lists...");
+    this.logger.info("Sending all lists...");
     Iterable<ListEntity> lists = this.listService.getAll();
     return lists;
   }
@@ -90,11 +90,11 @@ public class ListController {
     try {
       ListEntity list = new ListEntity(title);
       Long id = this.listService.add(list);
-      logger.info("Valid list, sending generated ID of created list...");
+      this.logger.info("Valid list, sending generated ID of created list...");
       // TODO No URI specified
       response = ResponseEntity.created(null).body(id);
     } catch (IllegalArgumentException e) {
-      logger.info("Invalid list, sending error message...");
+      this.logger.info("Invalid list, sending error message...");
       response = ResponseEntity.badRequest().body(e.getMessage());
     }
     return response;
@@ -128,10 +128,10 @@ public class ListController {
   ) {
     ResponseEntity<?> response;
     if (this.listService.delete(id)) {
-      logger.info("List exists, sending success response...");
+      this.logger.info("List exists, sending success response...");
       response = ResponseEntity.ok().build();
     } else {
-      logger.error("List does not exist, sending error response...");
+      this.logger.error("List does not exist, sending error response...");
       response = ResponseEntity.notFound().build();
     }
     return response;
@@ -146,7 +146,7 @@ public class ListController {
    */
   @ExceptionHandler(MethodArgumentTypeMismatchException.class)
   public ResponseEntity<String> handlePathVarException(MethodArgumentTypeMismatchException e) {
-    logger.error("Received request contains invalid formatting, sending error message...");
+    this.logger.error("Received request contains invalid formatting, sending error message...");
     return ResponseEntity.badRequest().body(e.getMessage());
   }
 
@@ -159,7 +159,7 @@ public class ListController {
    */
   @ExceptionHandler(HttpMessageNotReadableException.class)
   public ResponseEntity<String> handleRequestBodyException(HttpMessageNotReadableException e) {
-    logger.error("Received request body contains invalid formatting, sending error message...");
+    this.logger.error("Received request body contains invalid formatting, sending error message...");
     return ResponseEntity.badRequest().body(e.getMessage());
   }
 }
