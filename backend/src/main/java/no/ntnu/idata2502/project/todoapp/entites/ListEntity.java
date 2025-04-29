@@ -3,6 +3,7 @@ package no.ntnu.idata2502.project.todoapp.entites;
 import java.util.List;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,7 +17,7 @@ import jakarta.persistence.Table;
  * JPA annotations for ORM operations.
  * 
  * @author Candidate 10006
- * @version v1.1.1 (2025.04.29)
+ * @version v1.1.2 (2025.04.29)
  */
 @Entity
 @Table(name = "list")
@@ -33,7 +34,7 @@ public class ListEntity {
   @Schema(description = "List title")
   private String title;
 
-  @OneToMany(mappedBy = "list")
+  @OneToMany(mappedBy = "list", cascade = CascadeType.ALL)
   @Schema(description = "Todos in list")
   private List<TodoEntity> todos;
 

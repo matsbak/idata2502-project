@@ -9,8 +9,9 @@ import no.ntnu.idata2502.project.todoapp.entites.TodoEntity;
  * The TodoRepository interface represents the repository for {@link TodoEntity todos}.
  * 
  * @author Candidate 10006
- * @version v1.1.0 (2025.04.27)
+ * @version v1.2.0 (2025.04.29)
  */
 @Repository
 public interface TodoRepository extends CrudRepository<TodoEntity, Long> {
+  Iterable<TodoEntity> findByListId(Long listId);
 }

@@ -8,6 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
@@ -16,7 +17,7 @@ import jakarta.persistence.Table;
  * operations.
  * 
  * @author Candidate 10006
- * @version v1.1.2 (2025.04.29)
+ * @version v1.2.0 (2025.04.29)
  */
 @Entity
 @Table(name = "todo")
@@ -39,6 +40,8 @@ public class TodoEntity {
 
   @JsonIgnore
   @ManyToOne
+  @JoinColumn(name = "list_id", nullable = false)
+  @Schema(description = "List containing todo")
   private ListEntity list;
 
   /**
@@ -101,6 +104,15 @@ public class TodoEntity {
    */
   public ListEntity getList() {
     return this.list;
+  }
+
+  /**
+   * Setter for list.
+   * 
+   * @param list The specified list
+   */
+  public void setList(ListEntity list) {
+    this.list = list;
   }
 
   /**

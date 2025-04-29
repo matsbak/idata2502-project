@@ -12,7 +12,7 @@ import no.ntnu.idata2502.project.todoapp.repositories.ListRepository;
  * The ListService class represents the service for {@link ListEntity lists}.
  * 
  * @author Candidate 10006
- * @version v1.1.1 (2025.04.29)
+ * @version v1.2.0 (2025.04.29)
  */
 @Service
 public class ListService {
@@ -27,6 +27,16 @@ public class ListService {
    */
   public Iterable<ListEntity> getAll() {
     return this.listRepository.findAll();
+  }
+
+  /**
+   * Gets the list with the specified ID.
+   * 
+   * @param id The specified ID
+   * @return The list
+   */
+  public Optional<ListEntity> get(Long id) {
+    return this.listRepository.findById(id);
   }
 
   /**
