@@ -3,40 +3,46 @@ package no.ntnu.idata2502.project.todoapp.entites;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 /**
  * The TodoEntity class represents a specific todo. The class contains JPA annotations for ORM
  * operations.
  * 
  * @author Candidate 10006
- * @version v1.1.1 (2025.04.27)
+ * @version v1.1.2 (2025.04.29)
  */
-@Entity(name = "todo")
+@Entity
+@Table(name = "todo")
 @Schema(description = "Todo entity representing a specific todo")
 public class TodoEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "todo_id")
   @Schema(description = "Unique ID")
   private Long id;
 
+  @Column(name = "descripton")
   @Schema(description = "Todo description")
   private String description;
 
-  @Schema(description = "Completion status of todo")
-  private boolean completed;
+  @Column(name = "complete")
+  @Schema(description = "Todo completion status")
+  private boolean complete;
 
-  @ManyToOne
   @JsonIgnore
+  @ManyToOne
   private ListEntity list;
 
   /**
-   * Empty constructor required by JPA.
+   * Default constructor required by JPA.
    */
   public TodoEntity() {
     // Intentionally left blank
@@ -49,7 +55,7 @@ public class TodoEntity {
    */
   public TodoEntity(String description) {
     this.description = description;
-    this.completed = false;
+    this.complete = false;
   }
 
   /**
@@ -75,8 +81,8 @@ public class TodoEntity {
    * 
    * @return Completion status
    */
-  public boolean isCompleted() {
-    return this.completed;
+  public boolean isComplete() {
+    return this.complete;
   }
 
   /**
@@ -84,8 +90,8 @@ public class TodoEntity {
    * 
    * @param completed The specified completion status
    */
-  public void setCompleted(boolean completed) {
-    this.completed = completed;
+  public void setCompleted(boolean complete) {
+    this.complete = complete;
   }
 
   /**

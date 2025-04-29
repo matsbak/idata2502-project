@@ -12,7 +12,7 @@ import no.ntnu.idata2502.project.todoapp.repositories.TodoRepository;
  * The TodoService class represents the service for {@link TodoEntity todos}.
  * 
  * @author Candidate 10006
- * @version v1.1.1 (2025.04.27)
+ * @version v1.1.2 (2025.04.29)
  */
 @Service
 public class TodoService {
@@ -21,17 +21,16 @@ public class TodoService {
   private TodoRepository todoRepository;
 
   /**
-   * Returns all todos.
+   * Gets all todos.
    * 
    * @return All todos
    */
   public Iterable<TodoEntity> getAll() {
-    return todoRepository.findAll();
+    return this.todoRepository.findAll();
   }
 
   /**
-   * Returns the generated ID of the specified todo after it is stored. The todo is only stored if
-   * it is valid.
+   * Adds the specified todo. The specified todo is only added if it is valid.
    * 
    * @param todo The specified todo
    * @return The generated ID if the specified todo is valid
@@ -39,42 +38,43 @@ public class TodoService {
    */
   public Long add(TodoEntity todo) {
     if (!todo.isValid()) {
-      throw new IllegalArgumentException("Todo is invalid");
+      throw new IllegalArgumentException("The specified todo is invalid");
     }
-    todoRepository.save(todo);
+    this.todoRepository.save(todo);
     return todo.getId();
   }
 
   /**
-   * Returns true if the todo with the specified ID exists and is updated with the specified
-   * completion status or false otherwise.
+   * Updates the todo with the specified ID with the specified completion status. The todo is only
+   * updated if a todo with the specified ID exits.
    * 
    * @param id The specified ID
-   * @param completed The specified completion status
+   * @param complete The specified completion status
    * @return True if the todo exists and is updated or false otherwise
    */
-  public boolean update(Long id, boolean completed) {
-    Optional<TodoEntity> todo = todoRepository.findById(id);
+  public boolean update(Long id, boolean complete) {
+    Optional<TodoEntity> todo = this.todoRepository.findById(id);
     boolean exist = todo.isPresent();
     if (exist) {
       TodoEntity existingTodo = todo.get();
-      existingTodo.setCompleted(completed);
-      todoRepository.save(existingTodo);
+      existingTodo.setCompleted(complete);
+      this.todoRepository.save(existingTodo);
     }
     return exist;
   }
 
   /**
-   * Returns true if the todo with the specified ID exists and is deleted or false otherwise.
+   * Deletes the todo with the specified ID. The todo is only deleted if a todo with the specified
+   * ID exists.
    * 
    * @param id The specified ID
    * @return True if the todo exists and is deleted or false otherwise
    */
   public boolean delete(Long id) {
-    Optional<TodoEntity> todo = todoRepository.findById(id);
+    Optional<TodoEntity> todo = this.todoRepository.findById(id);
     boolean exist = todo.isPresent();
     if (exist) {
-      todoRepository.deleteById(id);
+      this.todoRepository.deleteById(id);
     }
     return exist;
   }

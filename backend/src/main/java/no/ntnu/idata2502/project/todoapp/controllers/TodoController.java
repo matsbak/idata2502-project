@@ -3,7 +3,6 @@ package no.ntnu.idata2502.project.todoapp.controllers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -18,22 +17,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Operation; 
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import no.ntnu.idata2502.project.todoapp.dto.TodoAddDto;
-import no.ntnu.idata2502.project.todoapp.dto.TodoUpdateDto;
 import no.ntnu.idata2502.project.todoapp.entites.TodoEntity;
 import no.ntnu.idata2502.project.todoapp.services.TodoService;
 
 /**
- * The TodoController class represents the REST controller class for todos.
- * 
- * <p>All HTTP requests affiliated with todos are handled in this class.</p>
+ * The TodoController class represents the REST controller class for {@link TodoEntity todos}. The
+ * class handles all HTTP traffic reaching its endpoints.
  * 
  * @author Candidate 10006
- * @version v1.0.0 (2024.11.26)
+ * @version v1.1.1 (2025.04.29)
  */
 @CrossOrigin
 @RestController
@@ -46,39 +42,33 @@ public class TodoController {
   private final Logger logger = LoggerFactory.getLogger(TodoController.class);
 
   /**
-   * Returns an iterable containing all todos.
+   * Endpoint for getting all todos.
    * 
-   * <p>The response body contains all todo data.</p>
-   * 
-   * @return 200 OK + all todo data
+   * @return <p><b>200 OK</b> (<i>body:</i> all todos)</p>
    */
   @Operation(
-    summary = "Get all todos",
+    summary = "Get todos",
     description = "Gets all todos"
   )
   @ApiResponses(value = {
     @ApiResponse(
       responseCode = "200",
-      description = "All todo data"
+      description = "Signals success and contains all todos"
     )
   })
   @GetMapping
   public Iterable<TodoEntity> getAll() {
-    logger.info("Sending all todo data...");
-    Iterable<TodoEntity> todos = todoService.getAll();
-
+    logger.info("Sending all todos...");
+    Iterable<TodoEntity> todos = this.todoService.getAll();
     return todos;
   }
 
   /**
-   * Returns a HTTP response to the request requesting to add the specified todo.
+   * Endpoint for adding a todo with the specified description.
    * 
-   * <p>The response body contains the generated ID of the specified todo on success or a string
-   * with an error message on error.</p>
-   * 
-   * @param todo The specified todo
-   * @return <p>201 CREATED on success + ID</p>
-   *         <p>400 BAD REQUEST on error</p>
+   * @param description The specified description
+   * @return <p><b>201 CREATED</b> if todo is valid (<i>body:</i> generated ID of created todo)</p>
+   *         <li><p><b>400 BAD REQUEST</b> if todo is invalid (<i>body:</i> error message)</p></li>
    */
   @Operation(
     summary = "Add todo",
@@ -87,92 +77,78 @@ public class TodoController {
   @ApiResponses(value = {
     @ApiResponse(
       responseCode = "201",
-      description = "ID of specified todo"
+      description = "Signals success and contains generated ID of created todo"
     ),
     @ApiResponse(
       responseCode = "400",
-      description = "Error message"
+      description = "Signals error and contains error message"
     )
   })
   @PostMapping
   public ResponseEntity<?> add(
-    @Parameter(description = "The description to add the todo with")
-    @RequestBody TodoAddDto todoAdd
+    @Parameter(description = "Description of todo to add")
+    @RequestBody String description
   ) {
     ResponseEntity<?> response;
-
     try {
-      TodoEntity todo = new TodoEntity(todoAdd.getDescription());
-      todoService.add(todo);
-
-      logger.info("Sending generated ID of new todo...");
-      response = new ResponseEntity<>(todo.getId(), HttpStatus.CREATED);
+      TodoEntity todo = new TodoEntity(description);
+      Long id = this.todoService.add(todo);
+      logger.info("Valid todo, sending generated ID of created todo...");
+      // TODO No URI specified
+      response = ResponseEntity.created(null).body(id);
     } catch (IllegalArgumentException e) {
-      logger.error("Invalid todo data, sending error message...");
-      response = new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+      logger.error("Invalid todo, sending error message...");
+      response = ResponseEntity.badRequest().body(e.getMessage());
     }
-
     return response;
   }
 
   /**
-   * Returns a HTTP response to the request requesting to update the todo with the specified ID
-   * with the specified complete status.
-   * 
-   * <p>Since if a todo is complete or not should be the only data that can be modified in a todo,
-   * this is the only data passed to this endpoint.</p>
-   * 
-   * <p>The response body contains an empty string on success or a string with an error message on
-   * error.</p>
+   * Endpoint for updating the todo with the specified ID with the specified completion status.
    * 
    * @param id The specified ID
-   * @param completed The specified complete status
-   * @return <p>200 OK on success</p>
-   *         <p>404 NOT FOUND if todo is not found</p>
+   * @param completed The specified completion status
+   * @return <p><b>200 OK</b> if todo exists</p>
+   *         <li><p><b>404 NOT FOUND</b> if todo does not exist</p></li>
    */
   @Operation(
     summary = "Update todo",
-    description = "Updates the todo with the specified ID with the specified complete status"
+    description = "Updates the todo with the specified ID with the specified completion status"
   )
   @ApiResponses(value = {
     @ApiResponse(
       responseCode = "200",
-      description = "Empty string"
+      description = "Signals success"
     ),
     @ApiResponse(
       responseCode = "404",
-      description = "Error message"
+      description = "Signals error"
     )
   })
   @PutMapping("/{id}")
   public ResponseEntity<String> update(
-    @Parameter(description = "The ID of the todo to update")
+    @Parameter(description = "ID of todo to update")
     @PathVariable Long id,
-    @Parameter(description = "The complete status to update the existing todo with")
-    @RequestBody TodoUpdateDto todoUpdate
+    @Parameter(description = "Updated completion status")
+    @RequestBody boolean complete
   ) {
     ResponseEntity<String> response;
-
-    if (todoService.update(id, todoUpdate.isCompleted())) {
-      logger.info("Todo found, updated todo");
-      response = new ResponseEntity<>("", HttpStatus.OK);
+    if (this.todoService.update(id, complete)) {
+      logger.info("Todo exists, sending success response...");
+      response = ResponseEntity.ok().build();
     } else {
-      logger.error("Todo not found, sending error message...");
-      response = new ResponseEntity<>("Todo with specified ID not found", HttpStatus.NOT_FOUND);
+      logger.error("Todo does not exist, sending error response...");
+      response = ResponseEntity.notFound().build();
     }
-
     return response;
   }
 
   /**
-   * Returns a HTTP response to the request requesting to delete the todo with the specified ID.
-   * 
-   * <p>The response body contains an empty string on success or a string with an error message on
-   * error.</p>
+   * Endpoint for deleting the todo with the specified ID
    * 
    * @param id The specified ID
-   * @return <p>200 OK on success</p>
-   *         <p>404 NOT FOUND if todo is not found</p>
+   * @return <p><b>200 OK</b> if todo exists</p>
+   *         <li><b>404 NOT FOUND</b> if todo does not exist</p></li>
    */
   @Operation(
     summary = "Delete todo",
@@ -181,57 +157,52 @@ public class TodoController {
   @ApiResponses(value = {
     @ApiResponse(
       responseCode = "200",
-      description = "Empty string"
+      description = "Signals success"
     ),
     @ApiResponse(
       responseCode = "404",
-      description = "Error message"
+      description = "Signals error"
     )
   })
   @DeleteMapping("/{id}")
   public ResponseEntity<String> delete(
-    @Parameter(description = "The ID of the todo to delete")
+    @Parameter(description = "ID of todo to delete")
     @PathVariable Long id
   ) {
     ResponseEntity<String> response;
-
-    if (todoService.delete(id)) {
-      logger.info("Todo found, deleted todo");
-      response = new ResponseEntity<>("", HttpStatus.OK);
+    if (this.todoService.delete(id)) {
+      logger.info("Todo exists, sending success response");
+      response = ResponseEntity.ok().build();
     } else {
-      logger.error("Todo not found, sending error message...");
-      response = new ResponseEntity<>("Todo with specified ID not found", HttpStatus.NOT_FOUND);
+      logger.error("Todo does not exist, sending error response...");
+      response = ResponseEntity.notFound().build();
     }
-
     return response;
   }
 
-  // Exception handling
-
   /**
-   * Returns a HTTP response to the request causing the specified
-   * MethodArgumentTypeMismatchException.
+   * Exception handler for handling exceptions caused by invalid formatting of path variables. This
+   * method sends a response to the request causing the specified exception.
    *
-   * @param e The specified MethodArgumentTypeMismatchException
-   * @return 400 BAD REQUEST + error message
+   * @param e The specified exception
+   * @return <p><b>400 BAD REQUEST</b> (<i>body:</i> error message)<p>
    */
   @ExceptionHandler(MethodArgumentTypeMismatchException.class)
   public ResponseEntity<String> handlePathVarException(MethodArgumentTypeMismatchException e) {
-    logger.error("Received HTTP request could not be read, sending error message...");
-    return new ResponseEntity<>("HTTP request contains a value on an invalid format",
-                                HttpStatus.BAD_REQUEST);
+    logger.error("Received request contains invalid formatting, sending error message...");
+    return ResponseEntity.badRequest().body(e.getMessage());
   }
 
   /**
-   * Returns a HTTP response to the request causing the specified HttpMessageNotReadableException.
+   * Exception handler for handling exceptions caused by invalid formatting of request bodies. This
+   * method sends a response to the request causing the specified exception.
    *
-   * @param e The specified HttpMessageNotReadableException
-   * @return 400 BAD REQUEST + error message
+   * @param e The specified exception
+   * @return <p><b>400 BAD REQUEST</b> (<i>body:</i> error message)</p>
    */
   @ExceptionHandler(HttpMessageNotReadableException.class)
   public ResponseEntity<String> handleRequestBodyException(HttpMessageNotReadableException e) {
-    logger.error("Received data could not be read, sending error message...");
-    return new ResponseEntity<>("Data not supplied or contains a parameter on an invalid format",
-                                HttpStatus.BAD_REQUEST);
+    logger.error("Received request body contains invalid formatting, sending error message...");
+    return ResponseEntity.badRequest().body(e.getMessage());
   }
 }

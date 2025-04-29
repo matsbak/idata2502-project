@@ -4,13 +4,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -21,10 +24,10 @@ import no.ntnu.idata2502.project.todoapp.services.ListService;
 
 /**
  * The ListController class represents the REST controller for {@link ListEntity lists}. The class
- * handles all HTTP traffic affiliated with lists.
+ * handles all HTTP traffic reaching its endpoints.
  * 
  * @author Candidate 10006
- * @version v1.1.0 (2025.04.29)
+ * @version v1.1.1 (2025.04.29)
  */
 @RestController
 @RequestMapping("/api/lists")
@@ -53,7 +56,7 @@ public class ListController {
   @GetMapping
   public Iterable<ListEntity> getAll() {
     logger.info("Sending all lists...");
-    Iterable<ListEntity> lists = listService.getAll();
+    Iterable<ListEntity> lists = this.listService.getAll();
     return lists;
   }
 
@@ -86,10 +89,10 @@ public class ListController {
     ResponseEntity<?> response;
     try {
       ListEntity list = new ListEntity(title);
-      listService.add(list);
+      Long id = this.listService.add(list);
       logger.info("Valid list, sending generated ID of created list...");
       // TODO No URI specified
-      response = ResponseEntity.created(null).body(list.getId());
+      response = ResponseEntity.created(null).body(id);
     } catch (IllegalArgumentException e) {
       logger.info("Invalid list, sending error message...");
       response = ResponseEntity.badRequest().body(e.getMessage());
@@ -101,8 +104,8 @@ public class ListController {
    * Endpoint for deleting the list with the specified ID.
    * 
    * @param id The specified ID
-   * @return <p><b>200 OK</b> If list exists</p>
-   *         <li><p><b>404 NOT FOUND</b> If list does not exist</p></li>
+   * @return <p><b>200 OK</b> if list exists</p>
+   *         <li><p><b>404 NOT FOUND</b> if list does not exist</p></li>
    */
   @Operation(
     summary = "Delete list",
@@ -119,15 +122,44 @@ public class ListController {
     )
   })
   @DeleteMapping("/{id}")
-  public ResponseEntity<?> delete(@PathVariable Long id) {
+  public ResponseEntity<?> delete(
+    @Parameter(description = "ID of list to delete")
+    @PathVariable Long id
+  ) {
     ResponseEntity<?> response;
-    if (listService.delete(id)) {
-      logger.info("List exists, sending error response...");
+    if (this.listService.delete(id)) {
+      logger.info("List exists, sending success response...");
       response = ResponseEntity.ok().build();
     } else {
       logger.error("List does not exist, sending error response...");
       response = ResponseEntity.notFound().build();
     }
     return response;
+  }
+
+  /**
+   * Exception handler for handling exceptions caused by invalid formatting of path variables. This
+   * method sends a response to the request causing the specified exception.
+   *
+   * @param e The specified exception
+   * @return <p><b>400 BAD REQUEST</b> (<i>body:</i> error message)<p>
+   */
+  @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+  public ResponseEntity<String> handlePathVarException(MethodArgumentTypeMismatchException e) {
+    logger.error("Received request contains invalid formatting, sending error message...");
+    return ResponseEntity.badRequest().body(e.getMessage());
+  }
+
+  /**
+   * Exception handler for handling exceptions caused by invalid formatting of request bodies. This
+   * method sends a response to the request causing the specified exception.
+   *
+   * @param e The specified exception
+   * @return <p><b>400 BAD REQUEST</b> (<i>body:</i> error message)</p>
+   */
+  @ExceptionHandler(HttpMessageNotReadableException.class)
+  public ResponseEntity<String> handleRequestBodyException(HttpMessageNotReadableException e) {
+    logger.error("Received request body contains invalid formatting, sending error message...");
+    return ResponseEntity.badRequest().body(e.getMessage());
   }
 }

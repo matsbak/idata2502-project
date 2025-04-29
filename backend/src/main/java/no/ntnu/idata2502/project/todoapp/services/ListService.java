@@ -12,7 +12,7 @@ import no.ntnu.idata2502.project.todoapp.repositories.ListRepository;
  * The ListService class represents the service for {@link ListEntity lists}.
  * 
  * @author Candidate 10006
- * @version v1.1.0 (2025.04.29)
+ * @version v1.1.1 (2025.04.29)
  */
 @Service
 public class ListService {
@@ -26,7 +26,7 @@ public class ListService {
    * @return All lists
    */
   public Iterable<ListEntity> getAll() {
-    return listRepository.findAll();
+    return this.listRepository.findAll();
   }
 
   /**
@@ -38,9 +38,9 @@ public class ListService {
    */
   public Long add(ListEntity list) {
     if (!list.isValid()) {
-      throw new IllegalArgumentException("List is invalid");
+      throw new IllegalArgumentException("The specified list is invalid");
     }
-    listRepository.save(list);
+    this.listRepository.save(list);
     return list.getId();
   }
 
@@ -52,10 +52,10 @@ public class ListService {
    * @return True if the list exists and is deleted or false otherwise
    */
   public boolean delete(Long id) {
-    Optional<ListEntity> list = listRepository.findById(id);
+    Optional<ListEntity> list = this.listRepository.findById(id);
     boolean exist = list.isPresent();
     if (exist) {
-      listRepository.deleteById(id);
+      this.listRepository.deleteById(id);
     }
     return exist;
   }
