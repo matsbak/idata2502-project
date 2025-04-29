@@ -14,7 +14,7 @@ import jakarta.persistence.OneToMany;
  * JPA annotations for ORM operations.
  * 
  * @author Candidate 10006
- * @version v1.1.1 (2025.04.27)
+ * @version v1.1.0 (2025.04.27)
  */
 @Entity(name = "list")
 @Schema(description = "List entity representing a specific list of todos")

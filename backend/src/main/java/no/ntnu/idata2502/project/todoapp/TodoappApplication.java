@@ -8,7 +8,7 @@ import org.springframework.boot.context.ApplicationPidFileWriter;
  * The TodoappApplication class represents the runner class for the application.
  * 
  * @author Candidate 10006
- * @version v1.0.0 (2024.04.19)
+ * @version v1.1.0 (2024.04.19)
  */
 @SpringBootApplication
 public class TodoappApplication {
