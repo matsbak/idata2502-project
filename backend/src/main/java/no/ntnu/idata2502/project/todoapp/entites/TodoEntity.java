@@ -17,7 +17,7 @@ import jakarta.persistence.Table;
  * operations.
  * 
  * @author Candidate 10006
- * @version v1.2.0 (2025.04.29)
+ * @version v1.2.1 (2025.04.30)
  */
 @Entity
 @Table(name = "todo")
@@ -93,7 +93,7 @@ public class TodoEntity {
    * 
    * @param completed The specified completion status
    */
-  public void setCompleted(boolean complete) {
+  public void setComplete(boolean complete) {
     this.complete = complete;
   }
 

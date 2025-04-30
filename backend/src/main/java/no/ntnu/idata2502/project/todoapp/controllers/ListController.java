@@ -20,6 +20,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import no.ntnu.idata2502.project.todoapp.dtos.ListAddDto;
 import no.ntnu.idata2502.project.todoapp.entites.ListEntity;
 import no.ntnu.idata2502.project.todoapp.services.ListService;
 
@@ -28,7 +29,7 @@ import no.ntnu.idata2502.project.todoapp.services.ListService;
  * handles all HTTP traffic reaching its endpoints.
  * 
  * @author Candidate 10006
- * @version v1.1.3 (2025.04.29)
+ * @version v1.1.4 (2025.04.30)
  */
 @RestController
 @CrossOrigin
@@ -85,12 +86,12 @@ public class ListController {
   })
   @PostMapping
   public ResponseEntity<Object> add(
-    @Parameter(description = "Title of list to add")
-    @RequestBody String title
+    @Parameter(description = "DTO containing title of list to add")
+    @RequestBody ListAddDto dto
   ) {
     ResponseEntity<Object> response;
     try {
-      ListEntity list = new ListEntity(title);
+      ListEntity list = new ListEntity(dto.getTitle());
       Long id = this.listService.add(list);
       this.logger.info("[POST] Valid list, sending generated ID of created list...");
       // TODO No URI specified

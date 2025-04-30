@@ -23,6 +23,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import no.ntnu.idata2502.project.todoapp.dtos.TodoAddDto;
+import no.ntnu.idata2502.project.todoapp.dtos.TodoUpdateDto;
 import no.ntnu.idata2502.project.todoapp.entites.ListEntity;
 import no.ntnu.idata2502.project.todoapp.entites.TodoEntity;
 import no.ntnu.idata2502.project.todoapp.services.ListService;
@@ -110,14 +112,14 @@ public class TodoController {
   public ResponseEntity<Object> add(
     @Parameter(description = "ID of list to add todo to")
     @PathVariable Long listId,
-    @Parameter(description = "Description of todo to add")
-    @RequestBody String description
+    @Parameter(description = "DTO containing description of todo to add")
+    @RequestBody TodoAddDto dto
   ) {
     ResponseEntity<Object> response;
     Optional<ListEntity> list = this.listService.get(listId);
     if (list.isPresent()) {
       try {
-        TodoEntity todo = new TodoEntity(description);
+        TodoEntity todo = new TodoEntity(dto.getDescription());
         todo.setList(list.get());
         Long id = this.todoService.add(todo);
         this.logger.info("[POST] Valid todo, sending generated ID of created todo...");
@@ -160,11 +162,11 @@ public class TodoController {
   public ResponseEntity<Void> update(
     @Parameter(description = "ID of todo to update")
     @PathVariable Long id,
-    @Parameter(description = "Updated completion status")
-    @RequestBody boolean complete
+    @Parameter(description = "DTO containing updated completion status")
+    @RequestBody TodoUpdateDto dto
   ) {
     ResponseEntity<Void> response;
-    if (this.todoService.update(id, complete)) {
+    if (this.todoService.update(id, dto.isComplete())) {
       this.logger.info("[PUT] Todo exists, sending success response...");
       response = ResponseEntity.ok().build();
     } else {

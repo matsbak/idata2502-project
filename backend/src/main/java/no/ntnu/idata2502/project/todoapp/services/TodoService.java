@@ -12,7 +12,7 @@ import no.ntnu.idata2502.project.todoapp.repositories.TodoRepository;
  * The TodoService class represents the service for {@link TodoEntity todos}.
  * 
  * @author Candidate 10006
- * @version v1.2.0 (2025.04.29)
+ * @version v1.2.1 (2025.04.30)
  */
 @Service
 public class TodoService {
@@ -57,7 +57,7 @@ public class TodoService {
     boolean exist = todo.isPresent();
     if (exist) {
       TodoEntity existingTodo = todo.get();
-      existingTodo.setCompleted(complete);
+      existingTodo.setComplete(complete);
       this.todoRepository.save(existingTodo);
     }
     return exist;
