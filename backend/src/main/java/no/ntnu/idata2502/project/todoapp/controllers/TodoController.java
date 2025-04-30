@@ -106,6 +106,10 @@ public class TodoController {
     @ApiResponse(
       responseCode = "400",
       description = "Signals error and contains error message"
+    ),
+    @ApiResponse(
+      responseCode = "404",
+      description = "Signals error"
     )
   })
   @PostMapping("/{listId}")
