@@ -35,7 +35,7 @@ import no.ntnu.idata2502.project.todoapp.services.TodoService;
  * class handles all HTTP traffic reaching its endpoints.
  * 
  * @author Candidate 10006
- * @version v1.2.0 (2025.04.29)
+ * @version v1.2.1 (2025.04.30)
  */
 @RestController
 @CrossOrigin
