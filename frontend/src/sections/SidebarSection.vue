@@ -14,7 +14,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   // Emits `select` and `removeList` are only used in template
   select: [id: number]
-  addList: [list: List]
+  addList: [title: string]
   removeList: [id: number]
 }>()
 
@@ -23,14 +23,8 @@ const inputMode = ref<boolean>(false)
 const displayInfo = ref<boolean>(false)
 
 const addList = () => {
-  const list: List = {
-    "id": props.lists.length > 0 ? props.lists[props.lists.length - 1].id + 1 : 1,
-    "title": input.value.value,
-    "todos": []
-  }
-  if (list.title) {
-    emit('addList', list)
-    emit('select', list.id)
+  if (input.value.value.trim()) {
+    emit('addList', input.value.value.trim())
     inputMode.value = false
   }
 }

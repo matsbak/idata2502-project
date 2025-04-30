@@ -4,11 +4,29 @@ import type { Todo } from '../types/Todo'
 import SidebarSection from './sections/SidebarSection.vue'
 import MainSection from './sections/MainSection.vue'
 import { onMounted, ref } from 'vue'
-import { getAll } from './api/list.ts'
+import { deleteList, postList, getLists } from './api/list.ts'
 
 const lists = ref<List[]>([])
 
 const selected = ref<number>(-1)
+
+const addList = async (title: string) => {
+  const id: number = await postList(title)
+  if (id > 0) {
+    const list: List = {
+      "id": id,
+      "title": title,
+      "todos": []
+    }
+    lists.value.push(list)
+  }
+  selected.value = id
+}
+
+const removeList = async (id: number) => {
+  await deleteList(id)
+  lists.value.splice(lists.value.indexOf(lists.value.find(list => list.id === id)), 1)
+}
 
 const toggle = (ids: number[]) => {
   const completed: boolean = lists.value
@@ -27,7 +45,7 @@ const remove = (ids: number[]) => {
 }
 
 const fetchLists = async () => {
-  lists.value = await getAll()
+  lists.value = await getLists()
 }
 
 onMounted(() => {
@@ -40,8 +58,8 @@ onMounted(() => {
     :lists="lists"
     :selected="selected"
     @select="(id) => selected === id ? selected = -1 : selected = id"
-    @add-list="(list) => lists.push(list)"
-    @remove-list="(id) => lists.splice(lists.indexOf(lists.find(list => list.id === id)), 1)"
+    @add-list="(title) => addList(title)"
+    @remove-list="(id) => removeList(id)"
   />
   <MainSection
     @toggle="(ids) => toggle(ids)"
