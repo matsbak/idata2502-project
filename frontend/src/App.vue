@@ -3,37 +3,10 @@ import type { List } from '../types/List'
 import type { Todo } from '../types/Todo'
 import SidebarSection from './sections/SidebarSection.vue'
 import MainSection from './sections/MainSection.vue'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
+import { getAll } from './api/list.ts'
 
-const lists = ref<List[]>([
-  {
-    "id": 1,
-    "title": "My first list",
-    "todos": [
-      { "id": 101, "description": "My first todo", "completed": false },
-      { "id": 102, "description": "My second todo", "completed": false },
-      { "id": 103, "description": "My third todo", "completed": false }
-    ]
-  },
-  {
-    "id": 2,
-    "title": "My second list",
-    "todos": [
-      { "id": 201, "description": "My fourth todo", "completed": false },
-      { "id": 202, "description": "My fifth todo", "completed": false },
-      { "id": 203, "description": "My sixth todo", "completed": false }
-    ]
-  },
-  {
-    "id": 3,
-    "title": "My third list",
-    "todos": [
-      { "id": 301, "description": "My seventh todo", "completed": false },
-      { "id": 302, "description": "My eighth todo", "completed": false },
-      { "id": 303, "description": "My ninth todo", "completed": false }
-    ]
-  }
-])
+const lists = ref<List[]>([])
 
 const selected = ref<number>(-1)
 
@@ -52,6 +25,14 @@ const remove = (ids: number[]) => {
   // Remove todo at defined index
   lists.value.find(list => list.id === ids[0]).todos.splice(index, 1)
 }
+
+const fetchLists = async () => {
+  lists.value = await getAll()
+}
+
+onMounted(() => {
+  fetchLists()
+})
 </script>
 
 <template>
