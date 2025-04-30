@@ -9,9 +9,9 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  // Emits `select` and `remove` are only used in template
-  select: [ids: number[]]
-  add: [todo: (number | Todo)[]]
+  // Emits `toggle` and `remove` are only used in template
+  toggle: [ids: number[]]
+  add: [todo: (number | string)[]]
   remove: [ids: number[]]
 }>()
 
@@ -19,13 +19,8 @@ const input = useTemplateRef('input')
 const inputMode = ref<boolean>(false)
 
 const add = () => {
-  const todo: Todo = {
-    "id": props.list.todos[props.list.todos.length - 1].id + 1,
-    "description": input.value.value,
-    "completed": false
-  }
-  if (todo.description) {
-    emit('add', [props.list.id, todo])
+  if (input.value.value.trim()) {
+    emit('add', [props.list.id, input.value.value.trim()])
     inputMode.value = false
   }
 }
@@ -53,7 +48,7 @@ onUpdated(() => inputMode.value ? input.value.focus() : null)
       >
         <div class="flex">
           <input
-            v-if="todo.completed"
+            v-if="todo.complete"
             @click="$emit('toggle', [list.id, todo.id])"
             type="checkbox"
             name="check"
@@ -71,7 +66,7 @@ onUpdated(() => inputMode.value ? input.value.focus() : null)
             @click="$emit('toggle', [list.id, todo.id])"
             :class="[
               'overflow-x-hidden text-nowrap cursor-default',
-              todo.completed ? 'line-through' : 'hover:line-through'
+              todo.complete ? 'line-through' : 'hover:line-through'
             ]"
           >{{ todo.description }}</p>
         </div>

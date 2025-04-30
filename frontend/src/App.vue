@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import type { List } from '../types/List'
-import type { Todo } from '../types/Todo'
+import type { List } from '../types/List.ts'
+import type { Todo } from '../types/Todo.ts'
 import SidebarSection from './sections/SidebarSection.vue'
 import MainSection from './sections/MainSection.vue'
 import { onMounted, ref } from 'vue'
-import { deleteList, postList, getLists } from './api/list.ts'
+import { deleteList, getLists, postList } from './api/list.ts'
+import { deleteTodo, postTodo, updateTodo } from './api/todo.ts'
 
 const lists = ref<List[]>([])
 
@@ -28,16 +29,30 @@ const removeList = async (id: number) => {
   lists.value.splice(lists.value.indexOf(lists.value.find(list => list.id === id)), 1)
 }
 
-const toggle = (ids: number[]) => {
-  const completed: boolean = lists.value
+const toggle = async (ids: number[]) => {
+  const complete: boolean = lists.value
     .find(list => list.id === ids[0]).todos
-    .find(todo => todo.id === ids[1]).completed
+    .find(todo => todo.id === ids[1]).complete
+  await updateTodo(ids[1], !complete)
   lists.value
     .find(list => list.id === ids[0]).todos
-    .find(todo => todo.id === ids[1]).completed = !completed
+    .find(todo => todo.id === ids[1]).complete = !complete
 }
 
-const remove = (ids: number[]) => {
+const add = async (data: (number | string)[]) => {
+  const id: number = await postTodo(data[0], data[1])
+  if (id > 0) {
+    const todo: Todo = {
+      "id": id,
+      "description": data[1],
+      "complete": false
+    }
+    lists.value.find(list => list.id === data[0]).todos.push(todo)
+  }
+}
+
+const remove = async (ids: number[]) => {
+  await deleteTodo(ids[1])
   const todos: Todo[] = lists.value.find(list => list.id === ids[0]).todos
   const index: number = todos.indexOf(todos.find(todo => todo.id === ids[1]))
   // Remove todo at defined index
@@ -48,9 +63,7 @@ const fetchLists = async () => {
   lists.value = await getLists()
 }
 
-onMounted(() => {
-  fetchLists()
-})
+onMounted(() => fetchLists())
 </script>
 
 <template>
@@ -63,7 +76,7 @@ onMounted(() => {
   />
   <MainSection
     @toggle="(ids) => toggle(ids)"
-    @add="(todo) => lists.find(list => list.id === todo[0]).todos.push(todo[1])"
+    @add="(data) => add(data)"
     @remove="(ids) => remove(ids)"
     :list="lists.find(list => list.id === selected)"
   />

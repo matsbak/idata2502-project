@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { List } from '../types/List'
+import type { List } from '../types/List.ts'
 import HeaderSection from './HeaderSection.vue'
 import FooterSection from './FooterSection.vue'
 import InfoDisplay from '../components/InfoDisplay.vue'
