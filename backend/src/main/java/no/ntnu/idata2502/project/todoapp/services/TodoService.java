@@ -12,22 +12,13 @@ import no.ntnu.idata2502.project.todoapp.repositories.TodoRepository;
  * The TodoService class represents the service for {@link TodoEntity todos}.
  * 
  * @author Candidate 10006
- * @version v1.2.1 (2025.04.30)
+ * @version v1.3.0 (2025.04.30)
  */
 @Service
 public class TodoService {
 
   @Autowired
   private TodoRepository todoRepository;
-
-  /**
-   * Gets all todos within the list with the specified ID.
-   * 
-   * @return All todos the list
-   */
-  public Iterable<TodoEntity> getList(Long listId) {
-    return this.todoRepository.findByListId(listId);
-  }
 
   /**
    * Adds the specified todo. The specified todo is only added if it is valid.

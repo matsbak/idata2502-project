@@ -10,7 +10,6 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -35,7 +34,7 @@ import no.ntnu.idata2502.project.todoapp.services.TodoService;
  * class handles all HTTP traffic reaching its endpoints.
  * 
  * @author Candidate 10006
- * @version v1.2.1 (2025.04.30)
+ * @version v1.3.0 (2025.04.30)
  */
 @RestController
 @CrossOrigin
@@ -49,42 +48,6 @@ public class TodoController {
   private TodoService todoService;
 
   private final Logger logger = LoggerFactory.getLogger(TodoController.class);
-
-  /**
-   * Endpoint for getting all todos in the list with the specified list ID.
-   * 
-   * @param listId The specified list ID
-   * @return <p><b>200 OK</b> (<i>body:</i> all todos in list)</p>
-   *         <li><p><b>404 NOT FOUND</b> if list does not exist</p></li>
-   */
-  @Operation(
-    summary = "Get todos in list",
-    description = "Gets all todos in the list with the specified ID"
-  )
-  @ApiResponses(value = {
-    @ApiResponse(
-      responseCode = "200",
-      description = "Signals success and contains all todos in list"
-    ),
-    @ApiResponse(
-      responseCode = "404",
-      description = "Signals error"
-    )
-  })
-  @GetMapping("/{listId}")
-  public ResponseEntity<Iterable<TodoEntity>> getList(@PathVariable Long listId) {
-    ResponseEntity<Iterable<TodoEntity>> response;
-    Optional<ListEntity> list = this.listService.get(listId);
-    if (list.isPresent()) {
-      Iterable<TodoEntity> todos = this.todoService.getList(listId);
-      this.logger.info("[GET] Sending all todos in list...");
-      response = ResponseEntity.ok().body(todos);
-    } else {
-      this.logger.error("[GET] List does not exist, sending error response...");
-      response = ResponseEntity.notFound().build();
-    }
-    return response;
-  }
 
   /**
    * Endpoint for adding a todo with the specified description.
