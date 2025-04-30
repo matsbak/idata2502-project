@@ -35,8 +35,8 @@ import no.ntnu.idata2502.project.todoapp.services.TodoService;
  * @author Candidate 10006
  * @version v1.2.0 (2025.04.29)
  */
-@CrossOrigin
 @RestController
+@CrossOrigin
 @RequestMapping("/api/todos")
 public class TodoController {
 
