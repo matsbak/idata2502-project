@@ -6,7 +6,7 @@ import InfoDisplay from '../components/InfoDisplay.vue'
 import { onUpdated, ref, useTemplateRef } from 'vue'
 import { CornerDownLeft, Plus, Trash2 } from 'lucide-vue-next'
 
-const props = defineProps<{
+defineProps<{
   lists: List[]
   selected: number
 }>()
@@ -23,7 +23,7 @@ const inputMode = ref<boolean>(false)
 const displayInfo = ref<boolean>(false)
 
 const addList = () => {
-  if (input.value.value.trim()) {
+  if (input.value && input.value.value.trim()) {
     emit('addList', input.value.value.trim())
     inputMode.value = false
   }
@@ -31,7 +31,7 @@ const addList = () => {
 
 onUpdated(() => {
   if (inputMode.value && !displayInfo.value) {
-    input.value.focus()
+    input.value!.focus()
   }
 })
 </script>

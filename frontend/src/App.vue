@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { List } from '../types/List.ts'
-import type { Todo } from '../types/Todo.ts'
+import type { List } from './types/List.ts'
+import type { Todo } from './types/Todo.ts'
 import SidebarSection from './sections/SidebarSection.vue'
 import MainSection from './sections/MainSection.vue'
 import { onMounted, ref } from 'vue'
@@ -26,20 +26,24 @@ const addList = async (title: string) => {
 
 const removeList = async (id: number) => {
   await deleteList(id)
-  lists.value.splice(lists.value.indexOf(lists.value.find(list => list.id === id)), 1)
+  const list: List = lists.value.find(list => list.id === id)!
+  if (list) {
+    const index: number = lists.value.indexOf(list)
+    lists.value.splice(index, 1)
+  }
 }
 
 const toggle = async (ids: number[]) => {
   const complete: boolean = lists.value
-    .find(list => list.id === ids[0]).todos
-    .find(todo => todo.id === ids[1]).complete
+    .find(list => list.id === ids[0])!.todos
+    .find(todo => todo.id === ids[1])!.complete
   await updateTodo(ids[1], !complete)
   lists.value
-    .find(list => list.id === ids[0]).todos
-    .find(todo => todo.id === ids[1]).complete = !complete
+    .find(list => list.id === ids[0])!.todos
+    .find(todo => todo.id === ids[1])!.complete = !complete
 }
 
-const add = async (data: (number | string)[]) => {
+const add = async (data: [number, string]) => {
   const id: number = await postTodo(data[0], data[1])
   if (id > 0) {
     const todo: Todo = {
@@ -47,16 +51,20 @@ const add = async (data: (number | string)[]) => {
       "description": data[1],
       "complete": false
     }
-    lists.value.find(list => list.id === data[0]).todos.push(todo)
+    lists.value.find(list => list.id === data[0])!.todos.push(todo)
   }
 }
 
 const remove = async (ids: number[]) => {
   await deleteTodo(ids[1])
-  const todos: Todo[] = lists.value.find(list => list.id === ids[0]).todos
-  const index: number = todos.indexOf(todos.find(todo => todo.id === ids[1]))
-  // Remove todo at defined index
-  lists.value.find(list => list.id === ids[0]).todos.splice(index, 1)
+  const list: List = lists.value.find(list => list.id === ids[0])!
+  if (list) {
+    const todos: Todo[] = list.todos
+    const todo: Todo = todos.find(todo => todo.id === ids[1])!
+    const index: number = todos.indexOf(todo)
+    // Remove todo at defined index
+    lists.value.find(list => list.id === ids[0])!.todos.splice(index, 1)
+  }
 }
 
 const fetchLists = async () => {

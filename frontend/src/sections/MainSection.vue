@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { List } from '../types/List.ts'
-import type { Todo } from '../types/Todo.ts'
 import { onUpdated, ref, useTemplateRef } from 'vue'
 import { CornerDownLeft, Plus, Trash2 } from 'lucide-vue-next'
 
@@ -11,7 +10,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   // Emits `toggle` and `remove` are only used in template
   toggle: [ids: number[]]
-  add: [todo: (number | string)[]]
+  add: [todo: [number, string]]
   remove: [ids: number[]]
 }>()
 
@@ -19,13 +18,13 @@ const input = useTemplateRef('input')
 const inputMode = ref<boolean>(false)
 
 const add = () => {
-  if (input.value.value.trim()) {
-    emit('add', [props.list.id, input.value.value.trim()])
+  if (input.value && input.value.value.trim()) {
+    emit('add', [props.list!.id, input.value.value.trim()])
     inputMode.value = false
   }
 }
 
-onUpdated(() => inputMode.value ? input.value.focus() : null)
+onUpdated(() => inputMode.value ? input.value!.focus() : null)
 </script>
 
 <template>
