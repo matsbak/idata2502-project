@@ -5,7 +5,7 @@ let baseUrl = ''
 if (window.location.host === 'localhost:5173') {
   baseUrl = '/dev'
 } else {
-  baseUrl = '/api'
+  baseUrl = '/prod'
 }
 
 const instance = axios.create({
