@@ -30,7 +30,7 @@ public class TodoEntity {
   @Schema(description = "Unique ID")
   private Long id;
 
-  @Column(name = "descripton")
+  @Column(name = "description")
   @Schema(description = "Todo description")
   private String description;
 
