@@ -1,0 +1,35 @@
+name: Docker Build CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      MYSQL_ROOT_PASSWORD: $ {{ secrets.MYSQL_ROOT_PASSWORD }}
+      MYSQL_DATABASE: $ {{ secrets.MYSQL_DATABASE }}
+      MYSQL_USER: $ {{ secrets.MYSQL_USER }}
+      MYSQL_PASSWORD: $ {{ secrets.MYSQL_PASSWORD }}
+      SPRING_DATASOURCE_URL: ${{ secrets.SPRING_DATASOURCE_URL }}
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build test containers
+      id: test
+      run: |
+        docker compose -f compose.yaml up --build --abort-on-container-exit backend-test
+        TEST_EXIT_CODE=$?
+        docker compose down
+        if [ TEST_EXIT_CODE -ne 0 ]; then
+          exit 1
+        fi
+    - name: Build application containers
+      id: build
+      run: docker compose -f compose.yaml up -d frontend backend db
+    - name: Stop application containers
+      id: stop
+      if: always()
+      run: docker compose down
