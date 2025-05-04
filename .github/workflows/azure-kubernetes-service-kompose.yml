@@ -89,6 +89,11 @@ jobs:
           kompose-version: "latest"
         id: bake
 
+      # Switches deprecated API versions in manifest files with updated versions
+      - name: Fix deprecated API versions
+        run: |
+          find . -name '*.yaml' -exec sed -i 's|extensions/v1beta1|apps/v1|g' {} +
+
       # Deploys application based on manifest files from previous step
       - name: Deploy application
         uses: Azure/k8s-deploy@v4
