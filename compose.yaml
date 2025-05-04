@@ -18,12 +18,17 @@ services:
       - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
       - SPRING_DATASOURCE_USERNAME=${MYSQL_USER}
       - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
-      interval: 30s
-      retries: 5
-      start_period: 10s
-      timeout: 10s
+    depends_on:
+      - db
+
+  backend-test:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.test
+    environment:
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
+      - SPRING_DATASOURCE_USERNAME=${MYSQL_USER}
+      - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
     depends_on:
       - db
   
@@ -36,12 +41,5 @@ services:
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
     volumes:
       - db-data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "user", "-p${MYSQL_PASSWORD}"]
-      interval: 30s
-      retries: 5
-      start_period: 10s
-      timeout: 10s
-
 volumes:
   db-data:
