@@ -87,19 +87,20 @@ jobs:
           renderEngine: "kompose"
           dockerComposeFile: ${{ env.DOCKER_COMPOSE_FILE_PATH }}
           kompose-version: "latest"
+          outputPath: ./manifests
         id: bake
 
       # Switches deprecated API versions in manifest files with updated versions
       - name: Fix deprecated API versions
         run: |
-          find . -name '*.yaml' -exec sed -i 's|extensions/v1beta1|apps/v1|g' {} +
+          find ./manifests -name '*.yaml' -exec sed -i 's|extensions/v1beta1|apps/v1|g' {} +
 
       # Deploys application based on manifest files from previous step
       - name: Deploy application
         uses: Azure/k8s-deploy@v4
         with:
           action: deploy
-          manifests: ${{ steps.bake.outputs.manifestsBundle }}
+          manifests: ./manifests
           images: |
             ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.FRONTEND_CONTAINER_NAME }}:${{ github.sha }}
             ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.BACKEND_CONTAINER_NAME }}:${{ github.sha }}
