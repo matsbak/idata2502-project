@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
  * contains positive and negative tests of the todo entity.
  * 
  * @author Candidate 10006
- * @version v1.0.0 (2025.05.03)
+ * @version v1.1.0 (2025.05.03)
  * @see TodoEntity
  */
 public class TodoEntityTest {
