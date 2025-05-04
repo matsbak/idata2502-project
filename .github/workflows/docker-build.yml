@@ -20,7 +20,7 @@ jobs:
     - name: Build test containers
       id: test
       run: |
-        docker compose -f compose.yaml up --build --abort-on-container-exit backend-test
+        docker compose -f compose.test.yaml up --build --abort-on-container-exit backend-test
         TEST_EXIT_CODE=$?
         docker compose down
         if [ TEST_EXIT_CODE -ne 0 ]; then
@@ -28,7 +28,7 @@ jobs:
         fi
     - name: Build application containers
       id: build
-      run: docker compose -f compose.yaml up -d frontend backend db
+      run: docker compose -f compose.test.yaml up -d frontend backend db
     - name: Stop application containers
       id: stop
       if: always()
