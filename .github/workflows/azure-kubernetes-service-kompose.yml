@@ -20,7 +20,7 @@ env:
   MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
   MYSQL_USER: ${{ secrets.MYSQL_USER }}
   MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
-  SPRING_DATASOURCE_URL: ${{ secrets.SPRING_DATASOURCE_URL_PROD }}
+  SPRING_DATASOURCE_URL: ${{ secrets.SPRING_DATASOURCE_URL }}
 
 jobs:
   buildImage:
