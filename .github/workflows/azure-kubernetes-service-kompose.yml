@@ -73,3 +73,6 @@ jobs:
         with:
           action: deploy
           manifests: ./k8s
+          images: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/todoapp:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/todoapp-api:latest
