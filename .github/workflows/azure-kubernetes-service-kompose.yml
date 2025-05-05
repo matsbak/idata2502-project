@@ -86,7 +86,7 @@ jobs:
         with:
           renderEngine: "kompose"
           dockerComposeFile: ${{ env.DOCKER_COMPOSE_FILE_PATH }}
-          kompose-version: "1.15"
+          kompose-version: "v1.15.0"
         id: bake
 
       # Deploys application based on manifest files from previous step
