@@ -5,6 +5,8 @@ services:
     image: matsbak/todoapp:latest
     ports:
       - "80:80"
+    labels:
+      kompose.service.type: LoadBalancer
     depends_on:
       - backend
   
