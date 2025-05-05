@@ -43,8 +43,8 @@ jobs:
       # Builds and pushes images up to your Azure Container Registry
       - name: Build and push images to ACR
         run: |
-          az acr build --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.FRONTEND_CONTAINER_NAME }}:${{ github.sha }} --registry ${{ env.AZURE_CONTAINER_REGISTRY_NAME }} -g ${{ env.RESOURCE_GROUP }} --file ./frontend/Dockerfile ./frontend
           az acr build --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.BACKEND_CONTAINER_NAME }}:${{ github.sha }} --registry ${{ env.AZURE_CONTAINER_REGISTRY_NAME }} -g ${{ env.RESOURCE_GROUP }} --file ./backend/Dockerfile ./backend
+          az acr build --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.FRONTEND_CONTAINER_NAME }}:${{ github.sha }} --registry ${{ env.AZURE_CONTAINER_REGISTRY_NAME }} -g ${{ env.RESOURCE_GROUP }} --file ./frontend/Dockerfile ./frontend
 
   deploy:
     permissions:
@@ -80,28 +80,21 @@ jobs:
           admin: 'false'
           use-kubelogin: 'true'
 
-      # Installs Kompose
-      - name: Install Kompose
-        run: |
-          curl -L https://github.com/kubernetes/kompose/releases/download/v1.32.0/kompose-linux-amd64 -o kompose
-          chmod +x kompose
-          sudo mv kompose /usr/local/bin/kompose
-      
-      - name: Create manifest files
-        run: |
-          kompose convert -f ${{ env.DOCKER_COMPOSE_FILE_PATH }} -o ./k8s
-
-      # Switches deprecated API versions in manifest files with updated versions
-      - name: Fix deprecated API versions
-        run: |
-          find ./k8s -name '*.yaml' -exec sed -i 's|extensions/v1beta1|apps/v1|g' {} +
+      # Runs Kompose to create manifest files
+      - name: Bake deployment
+        uses: azure/k8s-bake@v2
+        with:
+          renderEngine: "kompose"
+          dockerComposeFile: ${{ env.DOCKER_COMPOSE_FILE_PATH }}
+          kompose-version: "latest"
+        id: bake
 
       # Deploys application based on manifest files from previous step
       - name: Deploy application
         uses: Azure/k8s-deploy@v4
         with:
           action: deploy
-          manifests: ./k8s
+          manifests: ${{ steps.bake.outputs.manifestsBundle }}
           images: |
-            ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.FRONTEND_CONTAINER_NAME }}:${{ github.sha }}
             ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.BACKEND_CONTAINER_NAME }}:${{ github.sha }}
+            ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.FRONTEND_CONTAINER_NAME }}:${{ github.sha }}
