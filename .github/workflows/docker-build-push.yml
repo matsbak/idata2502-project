@@ -53,11 +53,11 @@ jobs:
     - name: Build and push frontend
       run: |
         docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/todoapp:latest ./frontend
-        docker push {{ secrets.DOCKERHUB_USERNAME }}/todoapp:latest
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/todoapp:latest
     
 
     # Builds and pushes the backend image
     - name: Build and push backend
       run: |
         docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/todoapp-api:latest ./backend
-        docker push {{ secrets.DOCKERHUB_USERNAME }}/todoapp-api:latest
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/todoapp-api:latest
