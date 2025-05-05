@@ -92,7 +92,7 @@ jobs:
       # Switches deprecated API versions in manifest files with updated versions
       # Fetched from https://stackoverflow.com/questions/58481850/no-matches-for-kind-deployment-in-version-extensions-v1beta1 at 2025.05.05
       - name: Fix deprecated API versions
-        run: find ${{ steps.bake.outputs.manifestsBundle }} -name '*.yaml' xargs -n 1 perl -pi -e 's/(apps\/v1beta2)|(extensions\/v1beta1)/apps\/v1/g'
+        run: perl -pi -e 's/extensions\/v1beta1/apps\/v1/g' ${{ steps.bake.outputs.manifestsBundle }}
 
       # Deploys application based on manifest files from previous step
       - name: Deploy application
