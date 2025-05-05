@@ -80,15 +80,16 @@ jobs:
           admin: 'false'
           use-kubelogin: 'true'
 
-      # Runs Kompose to create manifest files
-      - name: Bake deployment
-        uses: azure/k8s-bake@v2
-        with:
-          renderEngine: "kompose"
-          dockerComposeFile: ${{ env.DOCKER_COMPOSE_FILE_PATH }}
-          kompose-version: "latest"
-          outputPath: ./manifests
-        id: bake
+      # Installs Kompose
+      - name: Install Kompose
+        run: |
+          curl -L https://github.com/kubernetes/kompose/releases/download/v1.32.0/kompose-linux-amd64 -o kompose
+          chmod +x kompose
+          sudo mv kompose /usr/local/bin/kompose
+      
+      - name: Create manifest files
+        run: |
+          kompose convert -f ${{ env.DOCKER_COMPOSE_FILE_PATH }} -o ./manifests
 
       # Switches deprecated API versions in manifest files with updated versions
       - name: Fix deprecated API versions
