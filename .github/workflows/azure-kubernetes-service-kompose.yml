@@ -1,7 +1,7 @@
 name: Build and deploy an app to AKS with Kompose
 
 on:
-  workflow-run:
+  workflow_run:
     workflows: ["Docker Build and Push CI"]
     types:
       - completed
