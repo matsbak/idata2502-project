@@ -39,8 +39,6 @@ jobs:
       with:
         working-directory: frontend
         component: true
-        build: npm run build
-        start: npm start
 
     # Builds a container environment
     - name: Build application containers
