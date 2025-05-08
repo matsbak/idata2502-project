@@ -30,6 +30,17 @@ jobs:
         if [ TEST_EXIT_CODE -ne 0 ]; then
           exit 1
         fi
+    
+    # Builds the frontend for executing Cypress tests
+    # WARNING! The rest of this workflow will execute ONLY if tests pass
+    - name: Build frontend for Cypress
+      id: cypress
+      uses: cypress-io/github-action@v6
+      with:
+        working-directory: frontend
+        component: true
+        build: npm run build
+        start: npm start
 
     # Builds a container environment
     - name: Build application containers
