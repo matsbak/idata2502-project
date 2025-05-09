@@ -8,7 +8,6 @@ export const postTodo = async (listId: number, description: string): Promise<num
     })
     const status = res.status
     if (status === 201) {
-      console.log('Added todo to list', status)
       id = res.data
     } else if (status === 400) {
       console.error('Could not add todo to list (invalid description)', status)
@@ -30,7 +29,7 @@ export const updateTodo = async (id: number, complete: boolean): Promise<void> =
     })
     const status = res.status
     if (status === 200) {
-      console.log('Updated todo', status)
+      // Intentionally left blank
     } else if (status === 404) {
       console.error('Could not update todo (not found)', status)
     } else {
@@ -46,7 +45,7 @@ export const deleteTodo = async (id: number): Promise<void> => {
     const res = await instance.delete('/api/todos/' + id)
     const status = res.status
     if (status === 200) {
-      console.log('Deleted todo', status)
+      // Intentionally left blank
     } else if (status === 404) {
       console.error('Could not delete todo (not found)', status)
     } else {
